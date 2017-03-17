@@ -1,0 +1,14 @@
+{
+  "name": "swipe",
+  "version": "0.0.0",
+  "description": "Hello Expo!",
+  "author": null,
+  "private": true,
+  "main": "main.js",
+  "dependencies": {
+    "@expo/vector-icons": "~4.0.0",
+    "expo": "^15.0.0",
+    "react": "~15.4.0",
+    "react-native": "https://github.com/exponent/react-native/archive/sdk-15.0.0.tar.gz"
+  }
+}
