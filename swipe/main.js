@@ -5,13 +5,15 @@ import {
   Text,
   View,
 } from 'react-native';
-import Ball from './src/Ball';
+import Deck from './src/Deck';
+
+
 
 class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Ball />
+        <Deck />
       </View>
     );
   }
