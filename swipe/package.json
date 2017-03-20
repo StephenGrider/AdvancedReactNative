@@ -9,6 +9,7 @@
     "@expo/vector-icons": "~4.0.0",
     "expo": "^15.0.0",
     "react": "~15.4.0",
-    "react-native": "https://github.com/exponent/react-native/archive/sdk-15.0.0.tar.gz"
+    "react-native": "https://github.com/exponent/react-native/archive/sdk-15.0.0.tar.gz",
+    "react-native-elements": "^0.10.0"
   }
 }
