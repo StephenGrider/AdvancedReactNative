@@ -1,0 +1,213 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/Cellar/node/7.5.0/bin/node /usr/local/bin/firebase deploy --project one-time-password-c725a
+[debug] CLI Version:  3.5.0
+[debug] Platform:     darwin
+[debug] Node Version: v7.5.0
+[debug] Time:         Fri Mar 24 2017 14:01:36 GMT-0700 (PDT)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[debug] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token { refresh_token: '1/_cB61YlmNaru3EDpYS0HBx2rmRJW8DoNY_v5jLB8mbE',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Fri Mar 24 2017 14:01:36 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/one-time-password-c725a  
+ Fri Mar 24 2017 14:01:36 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/one-time-password-c725a/tokens  
+ Fri Mar 24 2017 14:01:37 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'one-time-password-c725a'...
+[info] 
+[info] i  deploying database, functions, hosting
+[info] ✔  database: rules ready to deploy.
+[debug] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "firebase-admin": "^4.1.2",
+    "firebase-functions": "^0.5",
+    "twilio": "^3.0.0-rc.13"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[info] i  runtimeconfig: ensuring necessary APIs are enabled...
+[debug] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/one-time-password-c725a?view=CONSUMER_VIEW  
+ Fri Mar 24 2017 14:01:39 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/one-time-password-c725a?view=CONSUMER_VIEW  
+ Fri Mar 24 2017 14:01:39 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] <<< HTTP RESPONSE 200
+[info] ✔  runtimeconfig: all necessary APIs are enabled
+[debug] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/one-time-password-c725a  
+ Fri Mar 24 2017 14:01:39 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://apikeys.googleapis.com/v1/projects/one-time-password-c725a/apiKeys  
+ Fri Mar 24 2017 14:01:39 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/one-time-password-c725a/configs  
+ Fri Mar 24 2017 14:01:45 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] > [functions] runtime config materialized as: {
+  "firebase": {
+    "databaseURL": "https://one-time-password-c725a.firebaseio.com",
+    "storageBucket": "one-time-password-c725a.appspot.com",
+    "apiKey": "AIzaSyC-uEMuqBqVM9OlzLlvdLXTdK2GUN8ofAI",
+    "authDomain": "one-time-password-c725a.firebaseapp.com"
+  }
+}
+[debug] > [functions] parsed triggers: [
+  {
+    "httpsTrigger": {},
+    "name": "createUser",
+    "entryPoint": "createUser"
+  },
+  {
+    "httpsTrigger": {},
+    "name": "requestOneTimePassword",
+    "entryPoint": "requestOneTimePassword"
+  },
+  {
+    "httpsTrigger": {},
+    "name": "verifyOneTimePassword",
+    "entryPoint": "verifyOneTimePassword"
+  }
+]
+[info] i  functions: packaged functions (4.54 KB) for uploading
+[debug] >>> HTTP REQUEST GET https://www.googleapis.com/storage/v1/b/staging.one-time-password-c725a.appspot.com  
+ Fri Mar 24 2017 14:01:48 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST POST https://www.googleapis.com/upload/storage/v1/b/staging.one-time-password-c725a.appspot.com/o?uploadType=media&name=firebase-functions-source ReadStream {
+  _readableState: 
+   ReadableState {
+     objectMode: false,
+     highWaterMark: 65536,
+     buffer: BufferList { head: [Object], tail: [Object], length: 1 },
+     length: 4644,
+     pipes: null,
+     pipesCount: 0,
+     flowing: null,
+     ended: true,
+     endEmitted: false,
+     reading: false,
+     sync: false,
+     needReadable: false,
+     emittedReadable: true,
+     readableListening: false,
+     resumeScheduled: false,
+     defaultEncoding: 'utf8',
+     ranOut: false,
+     awaitDrain: 0,
+     readingMore: false,
+     decoder: null,
+     encoding: null },
+  readable: true,
+  domain: null,
+  _events: { end: [Function] },
+  _eventsCount: 1,
+  _maxListeners: undefined,
+  path: '/var/folders/z9/0qxhpm9x2n9b05hc33k0sh6h0000gn/T/firebase-functions-57578RuWDhVjhhxfQ.zip',
+  fd: 18,
+  flags: 'r',
+  mode: 438,
+  start: undefined,
+  end: undefined,
+  autoClose: true,
+  pos: undefined,
+  bytesRead: 4644 } 
+ Fri Mar 24 2017 14:01:48 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[info] ✔  functions: functions folder uploaded successfully
+[info] i  hosting: preparing public directory for upload...
+[debug] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/one-time-password-c725a/uploads/-Kg17JokL-Dd4S8y3Mcf?fileCount=2&message=  
+ Fri Mar 24 2017 14:01:48 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[info] ✔  hosting: public folder uploaded successfully
+[info] ✔  hosting: 2 files uploaded successfully
+[info] i  starting release process (may take several minutes)...
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/projects/one-time-password-c725a/locations/us-central1/functions  
+ Fri Mar 24 2017 14:01:49 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[info] i  functions: creating function verifyOneTimePassword...
+[debug] Trigger is: 
+[info] i  functions: updating function createUser...
+[debug] Trigger is: 
+[info] i  functions: updating function requestOneTimePassword...
+[debug] Trigger is: 
+[debug] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1beta2/projects/one-time-password-c725a/locations/us-central1/functions { sourceArchiveUrl: 'gs://staging.one-time-password-c725a.appspot.com/firebase-functions-source',
+  name: 'projects/one-time-password-c725a/locations/us-central1/functions/verifyOneTimePassword',
+  entryPoint: 'verifyOneTimePassword',
+  httpsTrigger: {} } 
+ Fri Mar 24 2017 14:01:50 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST PUT https://cloudfunctions.googleapis.com/v1beta2/projects/one-time-password-c725a/locations/us-central1/functions/createUser { sourceArchiveUrl: 'gs://staging.one-time-password-c725a.appspot.com/firebase-functions-source',
+  name: 'projects/one-time-password-c725a/locations/us-central1/functions/createUser',
+  entryPoint: 'createUser',
+  httpsTrigger: {} } 
+ Fri Mar 24 2017 14:01:50 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST PUT https://cloudfunctions.googleapis.com/v1beta2/projects/one-time-password-c725a/locations/us-central1/functions/requestOneTimePassword { sourceArchiveUrl: 'gs://staging.one-time-password-c725a.appspot.com/firebase-functions-source',
+  name: 'projects/one-time-password-c725a/locations/us-central1/functions/requestOneTimePassword',
+  entryPoint: 'requestOneTimePassword',
+  httpsTrigger: {} } 
+ Fri Mar 24 2017 14:01:50 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/projects/one-time-password-c725a/locations/us-central1/functions  
+ Fri Mar 24 2017 14:01:50 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvdmVyaWZ5T25lVGltZVBhc3N3b3JkL3BpYU5iQkFPYU1n  
+ Fri Mar 24 2017 14:01:50 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvY3JlYXRlVXNlci9LY3JUV25UWG9fRQ  
+ Fri Mar 24 2017 14:01:50 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvcmVxdWVzdE9uZVRpbWVQYXNzd29yZC9iUnFTN3ZvQ3VIUQ  
+ Fri Mar 24 2017 14:01:50 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] [functions] operation poll: verifyOneTimePassword: create operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvdmVyaWZ5T25lVGltZVBhc3N3b3JkL3BpYU5iQkFPYU1n is not done.
+[debug] [functions] operation poll: createUser: update operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvY3JlYXRlVXNlci9LY3JUV25UWG9fRQ is not done.
+[debug] [functions] operation poll: requestOneTimePassword: update operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvcmVxdWVzdE9uZVRpbWVQYXNzd29yZC9iUnFTN3ZvQ3VIUQ is not done.
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvdmVyaWZ5T25lVGltZVBhc3N3b3JkL3BpYU5iQkFPYU1n  
+ Fri Mar 24 2017 14:01:56 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvY3JlYXRlVXNlci9LY3JUV25UWG9fRQ  
+ Fri Mar 24 2017 14:01:56 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvcmVxdWVzdE9uZVRpbWVQYXNzd29yZC9iUnFTN3ZvQ3VIUQ  
+ Fri Mar 24 2017 14:01:56 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] [functions] operation poll: verifyOneTimePassword: create operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvdmVyaWZ5T25lVGltZVBhc3N3b3JkL3BpYU5iQkFPYU1n is not done.
+[debug] [functions] operation poll: createUser: update operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvY3JlYXRlVXNlci9LY3JUV25UWG9fRQ is not done.
+[debug] [functions] operation poll: requestOneTimePassword: update operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvcmVxdWVzdE9uZVRpbWVQYXNzd29yZC9iUnFTN3ZvQ3VIUQ is not done.
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvdmVyaWZ5T25lVGltZVBhc3N3b3JkL3BpYU5iQkFPYU1n  
+ Fri Mar 24 2017 14:02:01 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvY3JlYXRlVXNlci9LY3JUV25UWG9fRQ  
+ Fri Mar 24 2017 14:02:01 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvcmVxdWVzdE9uZVRpbWVQYXNzd29yZC9iUnFTN3ZvQ3VIUQ  
+ Fri Mar 24 2017 14:02:01 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] [functions] operation poll: verifyOneTimePassword: create operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvdmVyaWZ5T25lVGltZVBhc3N3b3JkL3BpYU5iQkFPYU1n is not done.
+[debug] [functions] operation poll: createUser: update operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvY3JlYXRlVXNlci9LY3JUV25UWG9fRQ is not done.
+[debug] [functions] operation poll: requestOneTimePassword: update operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvcmVxdWVzdE9uZVRpbWVQYXNzd29yZC9iUnFTN3ZvQ3VIUQ is not done.
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvdmVyaWZ5T25lVGltZVBhc3N3b3JkL3BpYU5iQkFPYU1n  
+ Fri Mar 24 2017 14:02:07 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvY3JlYXRlVXNlci9LY3JUV25UWG9fRQ  
+ Fri Mar 24 2017 14:02:07 GMT-0700 (PDT)
+[debug] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1beta2/operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvcmVxdWVzdE9uZVRpbWVQYXNzd29yZC9iUnFTN3ZvQ3VIUQ  
+ Fri Mar 24 2017 14:02:07 GMT-0700 (PDT)
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[debug] [functions] operation poll: verifyOneTimePassword: create operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvdmVyaWZ5T25lVGltZVBhc3N3b3JkL3BpYU5iQkFPYU1n is not done.
+[debug] [functions] operation poll: createUser: update operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvY3JlYXRlVXNlci9LY3JUV25UWG9fRQ is not done.
+[debug] [functions] operation poll: requestOneTimePassword: update operations/b25lLXRpbWUtcGFzc3dvcmQtYzcyNWEvdXMtY2VudHJhbDEvcmVxdWVzdE9uZVRpbWVQYXNzd29yZC9iUnFTN3ZvQ3VIUQ is not done.
