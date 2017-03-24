@@ -10,9 +10,10 @@ class SignInForm extends Component {
 
   handleSubmit = async () => {
     try {
-      await axios.post(`${ROOT_URL}/verifyOneTimePassword`, {
+      let response = await axios.post(`${ROOT_URL}/verifyOneTimePassword`, {
         phone: this.state.phone, code: this.state.code
       });
+      console.log(response);
     } catch (err) {
       console.log(err);
     }
