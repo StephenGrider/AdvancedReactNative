@@ -6,12 +6,13 @@ module.exports = function(req, res) {
   }
 
   const phone = String(req.body.phone).replace(/[^\d]/g, '');
-  const code = parseInt(code);
+  const code = parseInt(req.body.code);
 
   admin.auth().getUser(phone)
     .then(() => {
       const ref = admin.database().ref('users/' + phone);
       ref.on('value', snapshot => {
+        ref.off();
         const user = snapshot.val();
 
         if (user.code !== code || !user.codeValid) {
