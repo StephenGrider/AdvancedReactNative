@@ -1,0 +1,1371 @@
+'use strict';
+
+var _ = require('lodash');
+var Q = require('q');
+var AddressList = require('./account/address').AddressList;
+var ApplicationList = require('./account/application').ApplicationList;
+var AuthorizedConnectAppList = require(
+    './account/authorizedConnectApp').AuthorizedConnectAppList;
+var AvailablePhoneNumberCountryList = require(
+    './account/availablePhoneNumber').AvailablePhoneNumberCountryList;
+var CallList = require('./account/call').CallList;
+var ConferenceList = require('./account/conference').ConferenceList;
+var ConnectAppList = require('./account/connectApp').ConnectAppList;
+var IncomingPhoneNumberList = require(
+    './account/incomingPhoneNumber').IncomingPhoneNumberList;
+var KeyList = require('./account/key').KeyList;
+var MessageList = require('./account/message').MessageList;
+var NewKeyList = require('./account/newKey').NewKeyList;
+var NewSigningKeyList = require('./account/newSigningKey').NewSigningKeyList;
+var NotificationList = require('./account/notification').NotificationList;
+var OutgoingCallerIdList = require(
+    './account/outgoingCallerId').OutgoingCallerIdList;
+var Page = require('../../../base/Page');
+var QueueList = require('./account/queue').QueueList;
+var RecordingList = require('./account/recording').RecordingList;
+var SandboxList = require('./account/sandbox').SandboxList;
+var ShortCodeList = require('./account/shortCode').ShortCodeList;
+var SigningKeyList = require('./account/signingKey').SigningKeyList;
+var SipList = require('./account/sip').SipList;
+var TokenList = require('./account/token').TokenList;
+var TranscriptionList = require('./account/transcription').TranscriptionList;
+var UsageList = require('./account/usage').UsageList;
+var ValidationRequestList = require(
+    './account/validationRequest').ValidationRequestList;
+var deserialize = require('../../../base/deserialize');
+var values = require('../../../base/values');
+
+var AccountPage;
+var AccountList;
+var AccountInstance;
+var AccountContext;
+
+/* jshint ignore:start */
+/**
+ * @constructor Twilio.Api.V2010.AccountPage
+ * @augments Page
+ * @description Initialize the AccountPage
+ *
+ * @param {Twilio.Api.V2010} version - Version of the resource
+ * @param {object} response - Response from the API
+ * @param {object} solution - Path solution
+ *
+ * @returns AccountPage
+ */
+/* jshint ignore:end */
+function AccountPage(version, response, solution) {
+  // Path Solution
+  this._solution = solution;
+
+  Page.prototype.constructor.call(this, version, response, this._solution);
+}
+
+_.extend(AccountPage.prototype, Page.prototype);
+AccountPage.prototype.constructor = AccountPage;
+
+/* jshint ignore:start */
+/**
+ * Build an instance of AccountInstance
+ *
+ * @function getInstance
+ * @memberof Twilio.Api.V2010.AccountPage
+ * @instance
+ *
+ * @param {object} payload - Payload response from the API
+ *
+ * @returns AccountInstance
+ */
+/* jshint ignore:end */
+AccountPage.prototype.getInstance = function getInstance(payload) {
+  return new AccountInstance(
+    this._version,
+    payload
+  );
+};
+
+
+/* jshint ignore:start */
+/**
+ * @constructor Twilio.Api.V2010.AccountList
+ * @description Initialize the AccountList
+ *
+ * @param {Twilio.Api.V2010} version - Version of the resource
+ */
+/* jshint ignore:end */
+function AccountList(version) {
+  /* jshint ignore:start */
+  /**
+   * @function accounts
+   * @memberof Twilio.Api.V2010
+   * @instance
+   *
+   * @param {string} sid - sid of instance
+   *
+   * @returns {Twilio.Api.V2010.AccountContext}
+   */
+  /* jshint ignore:end */
+  function AccountListInstance(sid) {
+    return AccountListInstance.get(sid);
+  }
+
+  AccountListInstance._version = version;
+  // Path Solution
+  AccountListInstance._solution = {};
+  AccountListInstance._uri = _.template(
+    '/Accounts.json' // jshint ignore:line
+  )(AccountListInstance._solution);
+  /* jshint ignore:start */
+  /**
+   * create a AccountInstance
+   *
+   * @function create
+   * @memberof Twilio.Api.V2010.AccountList
+   * @instance
+   *
+   * @param {object|function} opts - ...
+   * @param {string} [opts.friendlyName] -
+   *          A human readable description of the account
+   * @param {function} [callback] - Callback to handle processed record
+   *
+   * @returns {Promise} Resolves to processed AccountInstance
+   */
+  /* jshint ignore:end */
+  AccountListInstance.create = function create(opts, callback) {
+    if (_.isFunction(opts)) {
+      callback = opts;
+      opts = {};
+    }
+    opts = opts || {};
+
+    var deferred = Q.defer();
+    var data = values.of({
+      'FriendlyName': opts.friendlyName
+    });
+
+    var promise = this._version.create({
+      uri: this._uri,
+      method: 'POST',
+      data: data
+    });
+
+    promise = promise.then(function(payload) {
+      deferred.resolve(new AccountInstance(
+        this._version,
+        payload,
+        this._solution.sid
+      ));
+    }.bind(this));
+
+    promise.catch(function(error) {
+      deferred.reject(error);
+    });
+
+    if (_.isFunction(callback)) {
+      deferred.promise.nodeify(callback);
+    }
+
+    return deferred.promise;
+  };
+
+  /* jshint ignore:start */
+  /**
+   * Streams AccountInstance records from the API.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
+   *
+   * The results are passed into the callback function, so this operation is memory efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback function.
+   *
+   * @function each
+   * @memberof Twilio.Api.V2010.AccountList
+   * @instance
+   *
+   * @param {object|function} opts - ...
+   * @param {string} [opts.friendlyName] - FriendlyName to filter on
+   * @param {account.status} [opts.status] - Status to filter on
+   * @param {number} [opts.limit] -
+   *         Upper limit for the number of records to return.
+   *         each() guarantees never to return more than limit.
+   *         Default is no limit
+   * @param {number} [opts.pageSize=50] -
+   *         Number of records to fetch per request,
+   *         when not set will use the default value of 50 records.
+   *         If no pageSize is defined but a limit is defined,
+   *         each() will attempt to read the limit with the most efficient
+   *         page size, i.e. min(limit, 1000)
+   * @param {Function} [opts.callback] -
+   *         Function to process each record. If this and a positional
+   * callback are passed, this one will be used
+   * @param {Function} [opts.done] -
+   *          Function to be called upon completion of streaming
+   * @param {Function} [callback] - Function to process each record
+   */
+  /* jshint ignore:end */
+  AccountListInstance.each = function each(opts, callback) {
+    opts = opts || {};
+    if (_.isFunction(opts)) {
+      opts = { callback: opts };
+    } else if (_.isFunction(callback) && !_.isFunction(opts.callback)) {
+      opts.callback = callback;
+    }
+
+    if (_.isUndefined(opts.callback)) {
+      throw new Error('Callback function must be provided');
+    }
+
+    var done = false;
+    var currentPage = 1;
+    var limits = this._version.readLimits({
+      limit: opts.limit,
+      pageSize: opts.pageSize
+    });
+
+    function onComplete(error) {
+      done = true;
+      if (_.isFunction(opts.done)) {
+        opts.done(error);
+      }
+    }
+
+    function fetchNextPage(fn) {
+      var promise = fn();
+      if (_.isUndefined(promise)) {
+        onComplete();
+        return;
+      }
+
+      promise.then(function(page) {
+        _.each(page.instances, function(instance) {
+          if (done) {
+            return false;
+          }
+
+          opts.callback(instance, onComplete);
+        });
+
+        if ((limits.pageLimit && limits.pageLimit <= currentPage)) {
+          onComplete();
+        } else if (!done) {
+          currentPage++;
+          fetchNextPage(_.bind(page.nextPage, page));
+        }
+      });
+
+      promise.catch(onComplete);
+    }
+
+    fetchNextPage(_.bind(this.page, this, opts));
+  };
+
+  /* jshint ignore:start */
+  /**
+   * @description Lists AccountInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback function.
+   *
+   * @function list
+   * @memberof Twilio.Api.V2010.AccountList
+   * @instance
+   *
+   * @param {object|function} opts - ...
+   * @param {string} [opts.friendlyName] - FriendlyName to filter on
+   * @param {account.status} [opts.status] - Status to filter on
+   * @param {number} [opts.limit] -
+   *         Upper limit for the number of records to return.
+   *         list() guarantees never to return more than limit.
+   *         Default is no limit
+   * @param {number} [opts.pageSize] -
+   *         Number of records to fetch per request,
+   *         when not set will use the default value of 50 records.
+   *         If no page_size is defined but a limit is defined,
+   *         list() will attempt to read the limit with the most
+   *         efficient page size, i.e. min(limit, 1000)
+   * @param {function} [callback] - Callback to handle list of records
+   *
+   * @returns {Promise} Resolves to a list of records
+   */
+  /* jshint ignore:end */
+  AccountListInstance.list = function list(opts, callback) {
+    if (_.isFunction(opts)) {
+      callback = opts;
+      opts = {};
+    }
+    opts = opts || {};
+    var deferred = Q.defer();
+    var allResources = [];
+    opts.callback = function(resource, done) {
+      allResources.push(resource);
+
+      if (!_.isUndefined(opts.limit) && allResources.length === opts.limit) {
+        done();
+      }
+    };
+
+    opts.done = function(error) {
+      if (_.isUndefined(error)) {
+        deferred.resolve(allResources);
+      } else {
+        deferred.reject(error);
+      }
+    };
+
+    if (_.isFunction(callback)) {
+      deferred.promise.nodeify(callback);
+    }
+
+    this.each(opts);
+    return deferred.promise;
+  };
+
+  /* jshint ignore:start */
+  /**
+   * Retrieve a single page of AccountInstance records from the API.
+   * Request is executed immediately
+   *
+   * If a function is passed as the first argument, it will be used as the callback function.
+   *
+   * @function page
+   * @memberof Twilio.Api.V2010.AccountList
+   * @instance
+   *
+   * @param {object|function} opts - ...
+   * @param {string} [opts.friendlyName] - FriendlyName to filter on
+   * @param {account.status} [opts.status] - Status to filter on
+   * @param {string} [opts.pageToken] - PageToken provided by the API
+   * @param {number} [opts.pageNumber] -
+   *          Page Number, this value is simply for client state
+   * @param {number} [opts.pageSize] - Number of records to return, defaults to 50
+   * @param {function} [callback] - Callback to handle list of records
+   *
+   * @returns {Promise} Resolves to a list of records
+   */
+  /* jshint ignore:end */
+  AccountListInstance.page = function page(opts, callback) {
+    if (_.isFunction(opts)) {
+      callback = opts;
+      opts = {};
+    }
+    opts = opts || {};
+
+    var deferred = Q.defer();
+    var data = values.of({
+      'FriendlyName': opts.friendlyName,
+      'Status': opts.status,
+      'PageToken': opts.pageToken,
+      'Page': opts.pageNumber,
+      'PageSize': opts.pageSize
+    });
+
+    var promise = this._version.page({
+      uri: this._uri,
+      method: 'GET',
+      params: data
+    });
+
+    promise = promise.then(function(payload) {
+      deferred.resolve(new AccountPage(
+        this._version,
+        payload,
+        this._solution
+      ));
+    }.bind(this));
+
+    promise.catch(function(error) {
+      deferred.reject(error);
+    });
+
+    if (_.isFunction(callback)) {
+      deferred.promise.nodeify(callback);
+    }
+
+    return deferred.promise;
+  };
+
+  /* jshint ignore:start */
+  /**
+   * Constructs a account
+   *
+   * @function get
+   * @memberof Twilio.Api.V2010.AccountList
+   * @instance
+   *
+   * @param {string} sid - Fetch by unique Account Sid
+   *
+   * @returns {Twilio.Api.V2010.AccountContext}
+   */
+  /* jshint ignore:end */
+  AccountListInstance.get = function get(sid) {
+    return new AccountContext(
+      this._version,
+      sid
+    );
+  };
+
+  return AccountListInstance;
+}
+
+
+/* jshint ignore:start */
+/**
+ * @constructor Twilio.Api.V2010.AccountInstance
+ * @description Initialize the AccountContext
+ *
+ * @property {string} authToken - The authorization token for this account
+ * @property {Date} dateCreated - The date this account was created
+ * @property {Date} dateUpdated - The date this account was last updated
+ * @property {string} friendlyName - A human readable description of this account
+ * @property {string} ownerAccountSid -
+ *          The unique 34 character id representing the parent of this account
+ * @property {string} sid -
+ *          A 34 character string that uniquely identifies this resource.
+ * @property {account.status} status - The status of this account
+ * @property {string} subresourceUris - Account Instance Subresources
+ * @property {account.type} type - The type of this account
+ * @property {string} uri -
+ *          The URI for this resource, relative to `https://api.twilio.com`
+ *
+ * @param {Twilio.Api.V2010} version - Version of the resource
+ * @param {object} payload - The instance payload
+ * @param {sid} sid - Fetch by unique Account Sid
+ */
+/* jshint ignore:end */
+function AccountInstance(version, payload, sid) {
+  this._version = version;
+
+  // Marshaled Properties
+  this.authToken = payload.auth_token; // jshint ignore:line
+  this.dateCreated = deserialize.rfc2822DateTime(payload.date_created); // jshint ignore:line
+  this.dateUpdated = deserialize.rfc2822DateTime(payload.date_updated); // jshint ignore:line
+  this.friendlyName = payload.friendly_name; // jshint ignore:line
+  this.ownerAccountSid = payload.owner_account_sid; // jshint ignore:line
+  this.sid = payload.sid; // jshint ignore:line
+  this.status = payload.status; // jshint ignore:line
+  this.subresourceUris = payload.subresource_uris; // jshint ignore:line
+  this.type = payload.type; // jshint ignore:line
+  this.uri = payload.uri; // jshint ignore:line
+
+  // Context
+  this._context = undefined;
+  this._solution = {
+    sid: sid || this.sid,
+  };
+}
+
+Object.defineProperty(AccountInstance.prototype,
+  '_proxy', {
+  get: function() {
+    if (!this._context) {
+      this._context = new AccountContext(
+        this._version,
+        this._solution.sid
+      );
+    }
+
+    return this._context;
+  },
+});
+
+/* jshint ignore:start */
+/**
+ * fetch a AccountInstance
+ *
+ * @function fetch
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @param {function} [callback] - Callback to handle processed record
+ *
+ * @returns {Promise} Resolves to processed AccountInstance
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.fetch = function fetch(callback) {
+  return this._proxy.fetch(callback);
+};
+
+/* jshint ignore:start */
+/**
+ * update a AccountInstance
+ *
+ * @function update
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @param {object|function} opts - ...
+ * @param {string} [opts.friendlyName] - FriendlyName to update
+ * @param {account.status} [opts.status] - Status to update the Account with
+ * @param {function} [callback] - Callback to handle processed record
+ *
+ * @returns {Promise} Resolves to processed AccountInstance
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.update = function update(opts, callback) {
+  return this._proxy.update(opts, callback);
+};
+
+/* jshint ignore:start */
+/**
+ * Access the addresses
+ *
+ * @function addresses
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.AddressList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.addresses = function addresses() {
+  return this._proxy.addresses;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the applications
+ *
+ * @function applications
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.ApplicationList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.applications = function applications() {
+  return this._proxy.applications;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the authorizedConnectApps
+ *
+ * @function authorizedConnectApps
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.AuthorizedConnectAppList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.authorizedConnectApps = function
+    authorizedConnectApps() {
+  return this._proxy.authorizedConnectApps;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the availablePhoneNumbers
+ *
+ * @function availablePhoneNumbers
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.AvailablePhoneNumberCountryList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.availablePhoneNumbers = function
+    availablePhoneNumbers() {
+  return this._proxy.availablePhoneNumbers;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the calls
+ *
+ * @function calls
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.CallList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.calls = function calls() {
+  return this._proxy.calls;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the conferences
+ *
+ * @function conferences
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.ConferenceList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.conferences = function conferences() {
+  return this._proxy.conferences;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the connectApps
+ *
+ * @function connectApps
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.ConnectAppList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.connectApps = function connectApps() {
+  return this._proxy.connectApps;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the incomingPhoneNumbers
+ *
+ * @function incomingPhoneNumbers
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.IncomingPhoneNumberList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.incomingPhoneNumbers = function incomingPhoneNumbers()
+    {
+  return this._proxy.incomingPhoneNumbers;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the keys
+ *
+ * @function keys
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.KeyList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.keys = function keys() {
+  return this._proxy.keys;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the messages
+ *
+ * @function messages
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.MessageList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.messages = function messages() {
+  return this._proxy.messages;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the newKeys
+ *
+ * @function newKeys
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.NewKeyList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.newKeys = function newKeys() {
+  return this._proxy.newKeys;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the newSigningKeys
+ *
+ * @function newSigningKeys
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.NewSigningKeyList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.newSigningKeys = function newSigningKeys() {
+  return this._proxy.newSigningKeys;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the notifications
+ *
+ * @function notifications
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.NotificationList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.notifications = function notifications() {
+  return this._proxy.notifications;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the outgoingCallerIds
+ *
+ * @function outgoingCallerIds
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.OutgoingCallerIdList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.outgoingCallerIds = function outgoingCallerIds() {
+  return this._proxy.outgoingCallerIds;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the queues
+ *
+ * @function queues
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.QueueList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.queues = function queues() {
+  return this._proxy.queues;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the recordings
+ *
+ * @function recordings
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.RecordingList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.recordings = function recordings() {
+  return this._proxy.recordings;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the sandbox
+ *
+ * @function sandbox
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.SandboxList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.sandbox = function sandbox() {
+  return this._proxy.sandbox;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the signingKeys
+ *
+ * @function signingKeys
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.SigningKeyList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.signingKeys = function signingKeys() {
+  return this._proxy.signingKeys;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the sip
+ *
+ * @function sip
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.SipList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.sip = function sip() {
+  return this._proxy.sip;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the shortCodes
+ *
+ * @function shortCodes
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.ShortCodeList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.shortCodes = function shortCodes() {
+  return this._proxy.shortCodes;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the tokens
+ *
+ * @function tokens
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.TokenList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.tokens = function tokens() {
+  return this._proxy.tokens;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the transcriptions
+ *
+ * @function transcriptions
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.TranscriptionList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.transcriptions = function transcriptions() {
+  return this._proxy.transcriptions;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the usage
+ *
+ * @function usage
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.UsageList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.usage = function usage() {
+  return this._proxy.usage;
+};
+
+/* jshint ignore:start */
+/**
+ * Access the validationRequests
+ *
+ * @function validationRequests
+ * @memberof Twilio.Api.V2010.AccountInstance
+ * @instance
+ *
+ * @returns {Twilio.Api.V2010.AccountContext.ValidationRequestList}
+ */
+/* jshint ignore:end */
+AccountInstance.prototype.validationRequests = function validationRequests() {
+  return this._proxy.validationRequests;
+};
+
+
+/* jshint ignore:start */
+/**
+ * @constructor Twilio.Api.V2010.AccountContext
+ * @description Initialize the AccountContext
+ *
+ * @property {Twilio.Api.V2010.AccountContext.AddressList} addresses -
+ *          addresses resource
+ * @property {Twilio.Api.V2010.AccountContext.ApplicationList} applications -
+ *          applications resource
+ * @property {Twilio.Api.V2010.AccountContext.AuthorizedConnectAppList} authorizedConnectApps -
+ *          authorizedConnectApps resource
+ * @property {Twilio.Api.V2010.AccountContext.AvailablePhoneNumberCountryList} availablePhoneNumbers -
+ *          availablePhoneNumbers resource
+ * @property {Twilio.Api.V2010.AccountContext.CallList} calls - calls resource
+ * @property {Twilio.Api.V2010.AccountContext.ConferenceList} conferences -
+ *          conferences resource
+ * @property {Twilio.Api.V2010.AccountContext.ConnectAppList} connectApps -
+ *          connectApps resource
+ * @property {Twilio.Api.V2010.AccountContext.IncomingPhoneNumberList} incomingPhoneNumbers -
+ *          incomingPhoneNumbers resource
+ * @property {Twilio.Api.V2010.AccountContext.KeyList} keys - keys resource
+ * @property {Twilio.Api.V2010.AccountContext.MessageList} messages -
+ *          messages resource
+ * @property {Twilio.Api.V2010.AccountContext.NewKeyList} newKeys -
+ *          newKeys resource
+ * @property {Twilio.Api.V2010.AccountContext.NewSigningKeyList} newSigningKeys -
+ *          newSigningKeys resource
+ * @property {Twilio.Api.V2010.AccountContext.NotificationList} notifications -
+ *          notifications resource
+ * @property {Twilio.Api.V2010.AccountContext.OutgoingCallerIdList} outgoingCallerIds -
+ *          outgoingCallerIds resource
+ * @property {Twilio.Api.V2010.AccountContext.QueueList} queues - queues resource
+ * @property {Twilio.Api.V2010.AccountContext.RecordingList} recordings -
+ *          recordings resource
+ * @property {Twilio.Api.V2010.AccountContext.SandboxList} sandbox -
+ *          sandbox resource
+ * @property {Twilio.Api.V2010.AccountContext.SigningKeyList} signingKeys -
+ *          signingKeys resource
+ * @property {Twilio.Api.V2010.AccountContext.SipList} sip - sip resource
+ * @property {Twilio.Api.V2010.AccountContext.ShortCodeList} shortCodes -
+ *          shortCodes resource
+ * @property {Twilio.Api.V2010.AccountContext.TokenList} tokens - tokens resource
+ * @property {Twilio.Api.V2010.AccountContext.TranscriptionList} transcriptions -
+ *          transcriptions resource
+ * @property {Twilio.Api.V2010.AccountContext.UsageList} usage - usage resource
+ * @property {Twilio.Api.V2010.AccountContext.ValidationRequestList} validationRequests -
+ *          validationRequests resource
+ *
+ * @param {Twilio.Api.V2010} version - Version of the resource
+ * @param {sid} sid - Fetch by unique Account Sid
+ */
+/* jshint ignore:end */
+function AccountContext(version, sid) {
+  this._version = version;
+
+  // Path Solution
+  this._solution = {
+    sid: sid,
+  };
+  this._uri = _.template(
+    '/Accounts/<%= sid %>.json' // jshint ignore:line
+  )(this._solution);
+
+  // Dependents
+  this._addresses = undefined;
+  this._applications = undefined;
+  this._authorizedConnectApps = undefined;
+  this._availablePhoneNumbers = undefined;
+  this._calls = undefined;
+  this._conferences = undefined;
+  this._connectApps = undefined;
+  this._incomingPhoneNumbers = undefined;
+  this._keys = undefined;
+  this._messages = undefined;
+  this._newKeys = undefined;
+  this._newSigningKeys = undefined;
+  this._notifications = undefined;
+  this._outgoingCallerIds = undefined;
+  this._queues = undefined;
+  this._recordings = undefined;
+  this._sandbox = undefined;
+  this._signingKeys = undefined;
+  this._sip = undefined;
+  this._shortCodes = undefined;
+  this._tokens = undefined;
+  this._transcriptions = undefined;
+  this._usage = undefined;
+  this._validationRequests = undefined;
+}
+
+/* jshint ignore:start */
+/**
+ * fetch a AccountInstance
+ *
+ * @function fetch
+ * @memberof Twilio.Api.V2010.AccountContext
+ * @instance
+ *
+ * @param {function} [callback] - Callback to handle processed record
+ *
+ * @returns {Promise} Resolves to processed AccountInstance
+ */
+/* jshint ignore:end */
+AccountContext.prototype.fetch = function fetch(callback) {
+  var deferred = Q.defer();
+  var promise = this._version.fetch({
+    uri: this._uri,
+    method: 'GET'
+  });
+
+  promise = promise.then(function(payload) {
+    deferred.resolve(new AccountInstance(
+      this._version,
+      payload,
+      this._solution.sid
+    ));
+  }.bind(this));
+
+  promise.catch(function(error) {
+    deferred.reject(error);
+  });
+
+  if (_.isFunction(callback)) {
+    deferred.promise.nodeify(callback);
+  }
+
+  return deferred.promise;
+};
+
+/* jshint ignore:start */
+/**
+ * update a AccountInstance
+ *
+ * @function update
+ * @memberof Twilio.Api.V2010.AccountContext
+ * @instance
+ *
+ * @param {object|function} opts - ...
+ * @param {string} [opts.friendlyName] - FriendlyName to update
+ * @param {account.status} [opts.status] - Status to update the Account with
+ * @param {function} [callback] - Callback to handle processed record
+ *
+ * @returns {Promise} Resolves to processed AccountInstance
+ */
+/* jshint ignore:end */
+AccountContext.prototype.update = function update(opts, callback) {
+  if (_.isFunction(opts)) {
+    callback = opts;
+    opts = {};
+  }
+  opts = opts || {};
+
+  var deferred = Q.defer();
+  var data = values.of({
+    'FriendlyName': opts.friendlyName,
+    'Status': opts.status
+  });
+
+  var promise = this._version.update({
+    uri: this._uri,
+    method: 'POST',
+    data: data
+  });
+
+  promise = promise.then(function(payload) {
+    deferred.resolve(new AccountInstance(
+      this._version,
+      payload,
+      this._solution.sid
+    ));
+  }.bind(this));
+
+  promise.catch(function(error) {
+    deferred.reject(error);
+  });
+
+  if (_.isFunction(callback)) {
+    deferred.promise.nodeify(callback);
+  }
+
+  return deferred.promise;
+};
+
+Object.defineProperty(AccountContext.prototype,
+  'addresses', {
+  get: function() {
+    if (!this._addresses) {
+      this._addresses = new AddressList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._addresses;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'applications', {
+  get: function() {
+    if (!this._applications) {
+      this._applications = new ApplicationList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._applications;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'authorizedConnectApps', {
+  get: function() {
+    if (!this._authorizedConnectApps) {
+      this._authorizedConnectApps = new AuthorizedConnectAppList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._authorizedConnectApps;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'availablePhoneNumbers', {
+  get: function() {
+    if (!this._availablePhoneNumbers) {
+      this._availablePhoneNumbers = new AvailablePhoneNumberCountryList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._availablePhoneNumbers;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'calls', {
+  get: function() {
+    if (!this._calls) {
+      this._calls = new CallList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._calls;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'conferences', {
+  get: function() {
+    if (!this._conferences) {
+      this._conferences = new ConferenceList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._conferences;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'connectApps', {
+  get: function() {
+    if (!this._connectApps) {
+      this._connectApps = new ConnectAppList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._connectApps;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'incomingPhoneNumbers', {
+  get: function() {
+    if (!this._incomingPhoneNumbers) {
+      this._incomingPhoneNumbers = new IncomingPhoneNumberList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._incomingPhoneNumbers;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'keys', {
+  get: function() {
+    if (!this._keys) {
+      this._keys = new KeyList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._keys;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'messages', {
+  get: function() {
+    if (!this._messages) {
+      this._messages = new MessageList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._messages;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'newKeys', {
+  get: function() {
+    if (!this._newKeys) {
+      this._newKeys = new NewKeyList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._newKeys;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'newSigningKeys', {
+  get: function() {
+    if (!this._newSigningKeys) {
+      this._newSigningKeys = new NewSigningKeyList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._newSigningKeys;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'notifications', {
+  get: function() {
+    if (!this._notifications) {
+      this._notifications = new NotificationList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._notifications;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'outgoingCallerIds', {
+  get: function() {
+    if (!this._outgoingCallerIds) {
+      this._outgoingCallerIds = new OutgoingCallerIdList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._outgoingCallerIds;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'queues', {
+  get: function() {
+    if (!this._queues) {
+      this._queues = new QueueList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._queues;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'recordings', {
+  get: function() {
+    if (!this._recordings) {
+      this._recordings = new RecordingList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._recordings;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'sandbox', {
+  get: function() {
+    if (!this._sandbox) {
+      this._sandbox = new SandboxList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._sandbox;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'signingKeys', {
+  get: function() {
+    if (!this._signingKeys) {
+      this._signingKeys = new SigningKeyList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._signingKeys;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'sip', {
+  get: function() {
+    if (!this._sip) {
+      this._sip = new SipList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._sip;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'shortCodes', {
+  get: function() {
+    if (!this._shortCodes) {
+      this._shortCodes = new ShortCodeList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._shortCodes;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'tokens', {
+  get: function() {
+    if (!this._tokens) {
+      this._tokens = new TokenList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._tokens;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'transcriptions', {
+  get: function() {
+    if (!this._transcriptions) {
+      this._transcriptions = new TranscriptionList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._transcriptions;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'usage', {
+  get: function() {
+    if (!this._usage) {
+      this._usage = new UsageList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._usage;
+  },
+});
+
+Object.defineProperty(AccountContext.prototype,
+  'validationRequests', {
+  get: function() {
+    if (!this._validationRequests) {
+      this._validationRequests = new ValidationRequestList(
+        this._version,
+        this._solution.sid
+      );
+    }
+    return this._validationRequests;
+  },
+});
+
+module.exports = {
+  AccountPage: AccountPage,
+  AccountList: AccountList,
+  AccountInstance: AccountInstance,
+  AccountContext: AccountContext
+};

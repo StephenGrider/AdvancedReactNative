@@ -1,0 +1,357 @@
+'use strict';
+
+var _ = require('lodash');
+var Q = require('q');
+var Page = require('../../../../../base/Page');
+var serialize = require('../../../../../base/serialize');
+var values = require('../../../../../base/values');
+
+var TaskQueuesStatisticsPage;
+var TaskQueuesStatisticsList;
+var TaskQueuesStatisticsInstance;
+var TaskQueuesStatisticsContext;
+
+/* jshint ignore:start */
+/**
+ * @constructor Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext.TaskQueuesStatisticsPage
+ * @augments Page
+ * @description Initialize the TaskQueuesStatisticsPage
+ *
+ * @param {Twilio.Taskrouter.V1} version - Version of the resource
+ * @param {object} response - Response from the API
+ * @param {object} solution - Path solution
+ *
+ * @returns TaskQueuesStatisticsPage
+ */
+/* jshint ignore:end */
+function TaskQueuesStatisticsPage(version, response, solution) {
+  // Path Solution
+  this._solution = solution;
+
+  Page.prototype.constructor.call(this, version, response, this._solution);
+}
+
+_.extend(TaskQueuesStatisticsPage.prototype, Page.prototype);
+TaskQueuesStatisticsPage.prototype.constructor = TaskQueuesStatisticsPage;
+
+/* jshint ignore:start */
+/**
+ * Build an instance of TaskQueuesStatisticsInstance
+ *
+ * @function getInstance
+ * @memberof Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext.TaskQueuesStatisticsPage
+ * @instance
+ *
+ * @param {object} payload - Payload response from the API
+ *
+ * @returns TaskQueuesStatisticsInstance
+ */
+/* jshint ignore:end */
+TaskQueuesStatisticsPage.prototype.getInstance = function getInstance(payload) {
+  return new TaskQueuesStatisticsInstance(
+    this._version,
+    payload,
+    this._solution.workspaceSid
+  );
+};
+
+
+/* jshint ignore:start */
+/**
+ * @constructor Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext.TaskQueuesStatisticsList
+ * @description Initialize the TaskQueuesStatisticsList
+ *
+ * @param {Twilio.Taskrouter.V1} version - Version of the resource
+ * @param {string} workspaceSid - The workspace_sid
+ */
+/* jshint ignore:end */
+function TaskQueuesStatisticsList(version, workspaceSid) {
+  /* jshint ignore:start */
+  /**
+   * @function statistics
+   * @memberof Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext
+   * @instance
+   *
+   * @param {string} sid - sid of instance
+   *
+   * @returns {Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext.TaskQueuesStatisticsContext}
+   */
+  /* jshint ignore:end */
+  function TaskQueuesStatisticsListInstance(sid) {
+    return TaskQueuesStatisticsListInstance.get(sid);
+  }
+
+  TaskQueuesStatisticsListInstance._version = version;
+  // Path Solution
+  TaskQueuesStatisticsListInstance._solution = {
+    workspaceSid: workspaceSid
+  };
+  TaskQueuesStatisticsListInstance._uri = _.template(
+    '/Workspaces/<%= workspaceSid %>/TaskQueues/Statistics' // jshint ignore:line
+  )(TaskQueuesStatisticsListInstance._solution);
+  /* jshint ignore:start */
+  /**
+   * Streams TaskQueuesStatisticsInstance records from the API.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
+   *
+   * The results are passed into the callback function, so this operation is memory efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback function.
+   *
+   * @function each
+   * @memberof Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext.TaskQueuesStatisticsList
+   * @instance
+   *
+   * @param {object|function} opts - ...
+   * @param {Date} [opts.endDate] - The end_date
+   * @param {string} [opts.friendlyName] - The friendly_name
+   * @param {number} [opts.minutes] - The minutes
+   * @param {Date} [opts.startDate] - The start_date
+   * @param {number} [opts.limit] -
+   *         Upper limit for the number of records to return.
+   *         each() guarantees never to return more than limit.
+   *         Default is no limit
+   * @param {number} [opts.pageSize=50] -
+   *         Number of records to fetch per request,
+   *         when not set will use the default value of 50 records.
+   *         If no pageSize is defined but a limit is defined,
+   *         each() will attempt to read the limit with the most efficient
+   *         page size, i.e. min(limit, 1000)
+   * @param {Function} [opts.callback] -
+   *         Function to process each record. If this and a positional
+   * callback are passed, this one will be used
+   * @param {Function} [opts.done] -
+   *          Function to be called upon completion of streaming
+   * @param {Function} [callback] - Function to process each record
+   */
+  /* jshint ignore:end */
+  TaskQueuesStatisticsListInstance.each = function each(opts, callback) {
+    opts = opts || {};
+    if (_.isFunction(opts)) {
+      opts = { callback: opts };
+    } else if (_.isFunction(callback) && !_.isFunction(opts.callback)) {
+      opts.callback = callback;
+    }
+
+    if (_.isUndefined(opts.callback)) {
+      throw new Error('Callback function must be provided');
+    }
+
+    var done = false;
+    var currentPage = 1;
+    var limits = this._version.readLimits({
+      limit: opts.limit,
+      pageSize: opts.pageSize
+    });
+
+    function onComplete(error) {
+      done = true;
+      if (_.isFunction(opts.done)) {
+        opts.done(error);
+      }
+    }
+
+    function fetchNextPage(fn) {
+      var promise = fn();
+      if (_.isUndefined(promise)) {
+        onComplete();
+        return;
+      }
+
+      promise.then(function(page) {
+        _.each(page.instances, function(instance) {
+          if (done) {
+            return false;
+          }
+
+          opts.callback(instance, onComplete);
+        });
+
+        if ((limits.pageLimit && limits.pageLimit <= currentPage)) {
+          onComplete();
+        } else if (!done) {
+          currentPage++;
+          fetchNextPage(_.bind(page.nextPage, page));
+        }
+      });
+
+      promise.catch(onComplete);
+    }
+
+    fetchNextPage(_.bind(this.page, this, opts));
+  };
+
+  /* jshint ignore:start */
+  /**
+   * @description Lists TaskQueuesStatisticsInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback function.
+   *
+   * @function list
+   * @memberof Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext.TaskQueuesStatisticsList
+   * @instance
+   *
+   * @param {object|function} opts - ...
+   * @param {Date} [opts.endDate] - The end_date
+   * @param {string} [opts.friendlyName] - The friendly_name
+   * @param {number} [opts.minutes] - The minutes
+   * @param {Date} [opts.startDate] - The start_date
+   * @param {number} [opts.limit] -
+   *         Upper limit for the number of records to return.
+   *         list() guarantees never to return more than limit.
+   *         Default is no limit
+   * @param {number} [opts.pageSize] -
+   *         Number of records to fetch per request,
+   *         when not set will use the default value of 50 records.
+   *         If no page_size is defined but a limit is defined,
+   *         list() will attempt to read the limit with the most
+   *         efficient page size, i.e. min(limit, 1000)
+   * @param {function} [callback] - Callback to handle list of records
+   *
+   * @returns {Promise} Resolves to a list of records
+   */
+  /* jshint ignore:end */
+  TaskQueuesStatisticsListInstance.list = function list(opts, callback) {
+    if (_.isFunction(opts)) {
+      callback = opts;
+      opts = {};
+    }
+    opts = opts || {};
+    var deferred = Q.defer();
+    var allResources = [];
+    opts.callback = function(resource, done) {
+      allResources.push(resource);
+
+      if (!_.isUndefined(opts.limit) && allResources.length === opts.limit) {
+        done();
+      }
+    };
+
+    opts.done = function(error) {
+      if (_.isUndefined(error)) {
+        deferred.resolve(allResources);
+      } else {
+        deferred.reject(error);
+      }
+    };
+
+    if (_.isFunction(callback)) {
+      deferred.promise.nodeify(callback);
+    }
+
+    this.each(opts);
+    return deferred.promise;
+  };
+
+  /* jshint ignore:start */
+  /**
+   * Retrieve a single page of TaskQueuesStatisticsInstance records from the API.
+   * Request is executed immediately
+   *
+   * If a function is passed as the first argument, it will be used as the callback function.
+   *
+   * @function page
+   * @memberof Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext.TaskQueuesStatisticsList
+   * @instance
+   *
+   * @param {object|function} opts - ...
+   * @param {Date} [opts.endDate] - The end_date
+   * @param {string} [opts.friendlyName] - The friendly_name
+   * @param {number} [opts.minutes] - The minutes
+   * @param {Date} [opts.startDate] - The start_date
+   * @param {string} [opts.pageToken] - PageToken provided by the API
+   * @param {number} [opts.pageNumber] -
+   *          Page Number, this value is simply for client state
+   * @param {number} [opts.pageSize] - Number of records to return, defaults to 50
+   * @param {function} [callback] - Callback to handle list of records
+   *
+   * @returns {Promise} Resolves to a list of records
+   */
+  /* jshint ignore:end */
+  TaskQueuesStatisticsListInstance.page = function page(opts, callback) {
+    if (_.isFunction(opts)) {
+      callback = opts;
+      opts = {};
+    }
+    opts = opts || {};
+
+    var deferred = Q.defer();
+    var data = values.of({
+      'EndDate': serialize.iso8601DateTime(opts.endDate),
+      'FriendlyName': opts.friendlyName,
+      'Minutes': opts.minutes,
+      'StartDate': serialize.iso8601DateTime(opts.startDate),
+      'PageToken': opts.pageToken,
+      'Page': opts.pageNumber,
+      'PageSize': opts.pageSize
+    });
+
+    var promise = this._version.page({
+      uri: this._uri,
+      method: 'GET',
+      params: data
+    });
+
+    promise = promise.then(function(payload) {
+      deferred.resolve(new TaskQueuesStatisticsPage(
+        this._version,
+        payload,
+        this._solution
+      ));
+    }.bind(this));
+
+    promise.catch(function(error) {
+      deferred.reject(error);
+    });
+
+    if (_.isFunction(callback)) {
+      deferred.promise.nodeify(callback);
+    }
+
+    return deferred.promise;
+  };
+
+  return TaskQueuesStatisticsListInstance;
+}
+
+
+/* jshint ignore:start */
+/**
+ * @constructor Twilio.Taskrouter.V1.WorkspaceContext.TaskQueueContext.TaskQueuesStatisticsInstance
+ * @description Initialize the TaskQueuesStatisticsContext
+ *
+ * @property {string} accountSid - The account_sid
+ * @property {string} cumulative - The cumulative
+ * @property {string} realtime - The realtime
+ * @property {string} taskQueueSid - The task_queue_sid
+ * @property {string} workspaceSid - The workspace_sid
+ *
+ * @param {Twilio.Taskrouter.V1} version - Version of the resource
+ * @param {object} payload - The instance payload
+ */
+/* jshint ignore:end */
+function TaskQueuesStatisticsInstance(version, payload, workspaceSid) {
+  this._version = version;
+
+  // Marshaled Properties
+  this.accountSid = payload.account_sid; // jshint ignore:line
+  this.cumulative = payload.cumulative; // jshint ignore:line
+  this.realtime = payload.realtime; // jshint ignore:line
+  this.taskQueueSid = payload.task_queue_sid; // jshint ignore:line
+  this.workspaceSid = payload.workspace_sid; // jshint ignore:line
+
+  // Context
+  this._context = undefined;
+  this._solution = {
+    workspaceSid: workspaceSid,
+  };
+}
+
+module.exports = {
+  TaskQueuesStatisticsPage: TaskQueuesStatisticsPage,
+  TaskQueuesStatisticsList: TaskQueuesStatisticsList,
+  TaskQueuesStatisticsInstance: TaskQueuesStatisticsInstance,
+  TaskQueuesStatisticsContext: TaskQueuesStatisticsContext
+};
