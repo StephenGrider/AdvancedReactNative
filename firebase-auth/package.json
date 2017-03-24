@@ -8,6 +8,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "expo": "^15.0.2",
+    "firebase": "^3.7.3",
     "react": "~15.4.0",
     "react-native": "https://github.com/exponent/react-native/archive/sdk-15.0.0.tar.gz",
     "react-native-elements": "^0.10.2"
