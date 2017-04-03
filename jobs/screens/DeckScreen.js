@@ -50,6 +50,7 @@ class DeckScreen extends Component {
           data={this.props.jobs}
           renderCard={this.renderCard}
           renderNoMoreCards={this.renderNoMoreCards}
+          keyProp="jobkey"
         />
       </View>
     );
