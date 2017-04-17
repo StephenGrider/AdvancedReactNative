@@ -1,0 +1,16 @@
+{
+  "name": "lambda-auth",
+  "version": "0.0.0",
+  "description": "Hello Exponent!",
+  "author": null,
+  "private": true,
+  "main": "main.js",
+  "dependencies": {
+    "@exponent/vector-icons": "~4.0.0",
+    "axios": "^0.15.3",
+    "exponent": "^14.0.0",
+    "react": "~15.4.0",
+    "react-native": "https://github.com/exponent/react-native/archive/sdk-14.0.0.tar.gz",
+    "react-native-elements": "^0.9.7"
+  }
+}
