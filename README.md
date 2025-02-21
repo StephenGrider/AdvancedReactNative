@@ -1,3 +1,2 @@
-# AdvancedReactNative
-
-Companion Repo to a course hosted on Udemy.com.  
+# AdvancedReact
+I WILL SOLVE IT
